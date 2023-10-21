@@ -31,23 +31,6 @@ resource azurerm_resource_group dev_center {
   }
 }
 
-resource azurerm_user_assigned_identity dev_center_identity {
-  name                         = "${azurerm_resource_group.dev_center.name}-identity"
-  resource_group_name          = azurerm_resource_group.dev_center.name
-  location                     = azurerm_resource_group.dev_center.location
-  tags                         = azurerm_resource_group.dev_center.tags
-}
-
-resource azurerm_role_assignment dev_center_subscription {
-  for_each                     = toset(["Contributor","User Access Administrator"])
-
-  scope                        = join("/",slice(split("/",azurerm_resource_group.dev_center.id),0,3))
-  role_definition_name         = each.value
-  principal_id                 = azurerm_user_assigned_identity.dev_center_identity.principal_id
-}
-
-
-
 resource azurerm_dev_center dev_center {
   name                         = azurerm_resource_group.dev_center.name
   resource_group_name          = azurerm_resource_group.dev_center.name
@@ -55,9 +38,15 @@ resource azurerm_dev_center dev_center {
   tags                         = azurerm_resource_group.dev_center.tags
 
   identity {
-    type                       = "UserAssigned"
-    identity_ids               = [azurerm_user_assigned_identity.dev_center_identity.id]
+    type                       = "SystemAssigned"
   }
+}
+resource azurerm_role_assignment dev_center_subscription {
+  for_each                     = toset(["Contributor","User Access Administrator"])
+
+  scope                        = join("/",slice(split("/",azurerm_resource_group.dev_center.id),0,3))
+  role_definition_name         = each.value
+  principal_id                 = azurerm_dev_center.dev_center.identity.0.principal_id
 }
 
 resource azurerm_log_analytics_workspace monitor {
@@ -114,7 +103,7 @@ resource azurerm_key_vault vault {
 resource azurerm_role_assignment dev_center_vault {
   scope                        = azurerm_key_vault.vault.id
   role_definition_name         = "Key Vault Secrets User"
-  principal_id                 = azurerm_user_assigned_identity.dev_center_identity.principal_id
+  principal_id                 = azurerm_dev_center.dev_center.identity.0.principal_id
 }
 resource azurerm_role_assignment terraform_vault {
   scope                        = azurerm_key_vault.vault.id
