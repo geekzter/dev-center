@@ -22,8 +22,8 @@ resource azurerm_resource_group dev_center {
     environment                = "dev"
     owner                      = local.owner
     provisioner                = "terraform"
-    provisioner-client-id      = data.azurerm_client_config.current.client_id
-    provisioner-object-id      = data.azurerm_client_config.current.object_id
+    provisionerClientId        = data.azurerm_client_config.current.client_id
+    provisionerObjectId        = data.azurerm_client_config.current.object_id
     repository                 = "dev-center"
     runid                      = var.run_id
     suffix                     = local.resource_suffix
