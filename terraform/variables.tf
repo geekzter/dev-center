@@ -7,6 +7,11 @@ variable application_owner {
   default                      = "" # Empty string takes objectId of current user
 }
 
+variable github_token {
+  description                  = "GitHub personal access token for access to catalog repo(s)"
+  default                      = null
+}
+
 variable location {
   default                      = "westeurope"
   nullable                     = false
