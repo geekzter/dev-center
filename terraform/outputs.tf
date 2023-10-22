@@ -2,6 +2,10 @@ output dev_center_url {
   value                        = azurerm_dev_center.dev_center.dev_center_uri
 }
 
+output dev_center_principal_id {
+  value                        = azurerm_user_assigned_identity.dev_center_identity.principal_id
+}
+
 output developer_portal_url {
   value                        = "https://devportal.microsoft.com/"
 }

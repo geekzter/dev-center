@@ -38,16 +38,12 @@ resource azurerm_dev_center dev_center {
   tags                         = azurerm_resource_group.dev_center.tags
 
   identity {
-    type                       = "SystemAssigned"
+    type                       = "UserAssigned"
+    identity_ids               = [azurerm_user_assigned_identity.dev_center_identity.id]
   }
 }
-resource azurerm_role_assignment dev_center_subscription {
-  for_each                     = toset(["Contributor","User Access Administrator"])
 
-  scope                        = join("/",slice(split("/",azurerm_resource_group.dev_center.id),0,3))
-  role_definition_name         = each.value
-  principal_id                 = azurerm_dev_center.dev_center.identity.0.principal_id
-}
+
 
 resource azurerm_log_analytics_workspace monitor {
   name                         = "${azurerm_resource_group.dev_center.name}-logs"
@@ -81,11 +77,7 @@ resource azurerm_dev_center_project project {
   tags                         = azurerm_resource_group.dev_center.tags
   dev_center_id                = azurerm_dev_center.dev_center.id
 }
-resource azurerm_role_assignment terraform_project {
-  scope                        = azurerm_dev_center_project.project.id
-  role_definition_name         = "Deployment Environments User"
-  principal_id                 = data.azurerm_client_config.current.object_id
-}
+
 
 resource azurerm_key_vault vault {
   name                         = "${azurerm_resource_group.dev_center.name}-vlt"
@@ -100,20 +92,10 @@ resource azurerm_key_vault vault {
   sku_name                     = "standard"
 }
 
-resource azurerm_role_assignment dev_center_vault {
-  scope                        = azurerm_key_vault.vault.id
-  role_definition_name         = "Key Vault Secrets User"
-  principal_id                 = azurerm_dev_center.dev_center.identity.0.principal_id
-}
-resource azurerm_role_assignment terraform_vault {
-  scope                        = azurerm_key_vault.vault.id
-  role_definition_name         = "Key Vault Secrets Officer"
-  principal_id                 = data.azurerm_client_config.current.object_id
-}
-
 resource azurerm_key_vault_secret github_token {
   name                         = "github-token"
   value                        = var.github_token
+  tags                         = azurerm_resource_group.dev_center.tags
   key_vault_id                 = azurerm_key_vault.vault.id
 
   count                        = var.github_token != null ? 1 : 0

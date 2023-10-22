@@ -7,6 +7,12 @@ variable application_owner {
   default                      = "" # Empty string takes objectId of current user
 }
 
+variable developer_object_ids {
+  description                  = "Object IDs of developers (User or Group) that should be granted access to the Dev Center"
+  type                         = list(string)
+  default                      = []
+}
+
 variable github_token {
   description                  = "GitHub personal access token for access to catalog repo(s)"
   default                      = null
