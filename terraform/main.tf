@@ -43,8 +43,6 @@ resource azurerm_dev_center dev_center {
   }
 }
 
-
-
 resource azurerm_log_analytics_workspace monitor {
   name                         = "${azurerm_resource_group.dev_center.name}-logs"
   location                     = azurerm_resource_group.dev_center.location
@@ -77,7 +75,7 @@ resource azurerm_dev_center_project project {
   tags                         = azurerm_resource_group.dev_center.tags
   dev_center_id                = azurerm_dev_center.dev_center.id
 }
-
+# TODO: Set up catalogs & environment types
 
 resource azurerm_key_vault vault {
   name                         = "${azurerm_resource_group.dev_center.name}-vlt"
