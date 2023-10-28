@@ -7,6 +7,10 @@ variable application_owner {
   default                      = "" # Empty string takes objectId of current user
 }
 
+variable configure_rbac {
+  default                      = true
+}
+
 variable developer_object_ids {
   description                  = "Object IDs of developers (User or Group) that should be granted access to the Dev Center"
   type                         = list(string)

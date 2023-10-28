@@ -54,6 +54,7 @@ jobs:
     terraformDirectory: $(devRepository)/terraform
     TF_IN_AUTOMATION: true
     TF_INPUT: 0
+    TF_VAR_configure_rbac: false
     # TF_VAR_resource_group_name: ${{ split(variables['System.CollectionUri'],'/')[3] }}-dev-center-$(Build.BuildId)
     TF_VAR_resource_group_name: dev-center-$(Build.BuildId)
     TF_VAR_resource_suffix: $(Build.BuildId)
@@ -84,6 +85,7 @@ jobs:
     env: # Maintain casing of Terraform variable names
       TF_VAR_application_name: $(TF_VAR_application_name)
       TF_VAR_application_owner: $(TF_VAR_application_owner)
+      TF_VAR_configure_rbac: $(TF_VAR_configure_rbac)
       TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
       TF_VAR_tags: $(TF_VAR_tags)
       TF_VAR_run_id: $(TF_VAR_run_id)
@@ -107,10 +109,11 @@ jobs:
         terraform destroy -auto-approve
       addSpnToEnvironment: true
       failOnStandardError: true
-      workingDirectory: '$(scriptDirectory)'
+      workingDirectory: '$(terraformDirectory)'
     env: # Maintain casing of Terraform variable names
       TF_VAR_application_name: $(TF_VAR_application_name)
       TF_VAR_application_owner: $(TF_VAR_application_owner)
+      TF_VAR_configure_rbac: $(TF_VAR_configure_rbac)
       TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
       TF_VAR_tags: $(TF_VAR_tags)
       TF_VAR_run_id: $(TF_VAR_run_id)
@@ -152,9 +155,7 @@ jobs:
         } else {
           Write-Host "No resources to remove"
         }
-      addSpnToEnvironment: true
       failOnStandardError: true
-      workingDirectory: '$(scriptDirectory)'
 
   - task: AzureResourceGroupDeployment@2
     displayName: 'Delete $(TF_VAR_resource_group_name)'

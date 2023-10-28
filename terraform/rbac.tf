@@ -29,6 +29,8 @@ resource azurerm_role_assignment dev_center_subscription_contributor {
   scope                        = local.subscription_resource_id
   role_definition_name         = "Contributor"
   principal_id                 = azurerm_user_assigned_identity.dev_center_identity.principal_id
+
+  count                        = var.configure_rbac ? 1 : 0
 }
 resource azurerm_role_assignment dev_center_subscription_admin {
   scope                        = local.subscription_resource_id
@@ -36,10 +38,12 @@ resource azurerm_role_assignment dev_center_subscription_admin {
   principal_id                 = azurerm_user_assigned_identity.dev_center_identity.principal_id
   condition                    = local.role_assignment_constraint
   condition_version            = "2.0"
+
+  count                        = var.configure_rbac ? 1 : 0
 }
 
 resource azurerm_role_assignment developer_environment_access {
-  for_each                     = toset(local.developer_object_ids)
+  for_each                     = var.configure_rbac ? toset(local.developer_object_ids) : toset([])
 
   scope                        = azurerm_dev_center_project.project.id
   role_definition_name         = "Deployment Environments User"
@@ -50,9 +54,13 @@ resource azurerm_role_assignment dev_center_vault {
   scope                        = azurerm_key_vault.vault.id
   role_definition_name         = "Key Vault Secrets User"
   principal_id                 = azurerm_user_assigned_identity.dev_center_identity.principal_id
+
+  count                        = var.configure_rbac ? 1 : 0
 }
 resource azurerm_role_assignment terraform_vault {
   scope                        = azurerm_key_vault.vault.id
   role_definition_name         = "Key Vault Secrets Officer"
   principal_id                 = data.azurerm_client_config.current.object_id
+
+  count                        = var.configure_rbac ? 1 : 0
 }
