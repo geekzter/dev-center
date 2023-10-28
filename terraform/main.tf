@@ -15,7 +15,7 @@ locals {
 }
 
 resource azurerm_resource_group dev_center {
-  name                         = terraform.workspace == "default" ? "${var.resource_prefix}-center-${local.resource_suffix}" : "${var.resource_prefix}-center-${terraform.workspace}-${local.resource_suffix}"
+  name                         = var.resource_group_name != null ? var.resource_group_name : (terraform.workspace == "default" ? "${var.resource_prefix}-center-${local.resource_suffix}" : "${var.resource_prefix}-center-${terraform.workspace}-${local.resource_suffix}")
   location                     = var.location
   tags                         = {
     application                = var.application_name

@@ -27,6 +27,10 @@ variable resource_prefix {
   description                  = "The prefix to put at the of resource names created"
   default                      = "dev"
 }
+variable resource_group_name {
+  description                  = "Override the name of the resource group to create with a specific value"
+  default                      = null
+}
 variable resource_suffix {
   description                  = "The suffix to put at the of resource names created"
   default                      = "" # Empty string triggers a random suffix
