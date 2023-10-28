@@ -54,7 +54,8 @@ jobs:
     terraformDirectory: $(devRepository)/terraform
     TF_IN_AUTOMATION: true
     TF_INPUT: 0
-    TF_VAR_resource_group_name: ${{ split(variables['System.CollectionUri'],'/')[3] }}-dev-center-ci-$(Build.BuildId)
+    # TF_VAR_resource_group_name: ${{ split(variables['System.CollectionUri'],'/')[3] }}-dev-center-$(Build.BuildId)
+    TF_VAR_resource_group_name: dev-center-$(Build.BuildId)
     TF_VAR_resource_suffix: $(Build.BuildId)
     TF_VAR_run_id: $(Build.BuildId)
     TF_WORKSPACE: ci
@@ -151,9 +152,6 @@ jobs:
         } else {
           Write-Host "No resources to remove"
         }
-
-        # Remove policy definition
-        ./delete_policy.ps1 -Workspace $(TF_WORKSPACE) -Suffix $(Build.BuildId)
       addSpnToEnvironment: true
       failOnStandardError: true
       workingDirectory: '$(scriptDirectory)'
