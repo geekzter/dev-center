@@ -44,7 +44,7 @@ jobs:
     vmImage: ubuntu-latest
 
   variables:
-  - AZURE_CORE_ONLY_SHOW_ERRORS: true
+    AZURE_CORE_ONLY_SHOW_ERRORS: true
     AZURE_EXTENSION_USE_DYNAMIC_INSTALL: yes_without_prompt
     devRepository: $(Build.SourcesDirectory)/dev-center
     identityRepository: $(Build.SourcesDirectory)/azure-identity-scripts
